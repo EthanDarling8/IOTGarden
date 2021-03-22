@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class HomeFragment extends Fragment {
 
@@ -46,16 +47,25 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         SoilReading sr = snapshot.getValue(SoilReading.class);
-
                         assert sr != null;
-                        for (Reading s : sr.stemma_1.values()) {
+
+                        Object[] srKeyArray = sr.stemma_1.keySet().toArray();
+                        String first = srKeyArray[0].toString();
+                        Reading sRead = sr.stemma_1.get(first);
+
+                        textView.setText(String.format("name: %s \n date: %s/%s/%s %s:00 \n" +
+                                        "moisture: %s temperature: %s",
+                                sRead.name, sRead.date.month, sRead.date.day, sRead.date.year, sRead.date.hour,
+                                sRead.soil.moisture, sRead.soil.temperature));
+
+                        /*for (Reading r : sr.stemma_1.values()) {
                             Log.d(TAG, String.format("name: %s day: %s moisture: %s",
-                                    s.name, s.date.day, s.soil.moisture));
+                                    r.name, r.date.day, r.soil.moisture));
                             textView.setText(String.format("name: %s \n date: %s/%s/%s %s:00 \n" +
                                             "moisture: %s temperature: %s",
-                                    s.name, s.date.month, s.date.day, s.date.year, s.date.hour,
-                                    s.soil.moisture, s.soil.temperature));
-                        }
+                                    r.name, r.date.month, r.date.day, r.date.year, r.date.hour,
+                                    r.soil.moisture, r.soil.temperature));
+                        }*/
 
                     }
                     @Override
