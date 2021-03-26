@@ -5,15 +5,17 @@ public class Date {
     public String month;
     public String day;
     public String hour;
+    public String minute;
 
     public Date() {
 
     }
 
-    public Date(String year, String month, String day, String hour) {
+    public Date(String year, String month, String day, String hour, String minute) {
         this.year = year;
         this.month = month;
         this.day = day;
         this.hour = hour;
+        this.minute = minute;
     }
 }
