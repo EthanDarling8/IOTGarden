@@ -1,16 +1,15 @@
 package com.example.iotgarden.ui.home;
 
-import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,8 +21,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,9 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class HomeFragment extends Fragment {
 
@@ -47,7 +42,6 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-//        final TextView textView = root.findViewById(R.id.text_home);
         LineChart chart = (LineChart) root.findViewById(R.id.chart);
 
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -57,6 +51,7 @@ public class HomeFragment extends Fragment {
 
                 // Read from the database
                 ValueEventListener soilListener = new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         SoilReading sr = snapshot.getValue(SoilReading.class);
@@ -64,7 +59,7 @@ public class HomeFragment extends Fragment {
 
                         Object[] srKeyArray = sr.stemma_1.keySet().toArray();
                         Arrays.sort(srKeyArray);
-                        List<Entry> entries = new ArrayList<Entry>();
+                        List<Entry> entries = new ArrayList<>();
 
                         XAxis xAxis = chart.getXAxis();
                         xAxis.setAxisMinimum(0);
@@ -76,13 +71,26 @@ public class HomeFragment extends Fragment {
 
                         for (Object k : srKeyArray) {
                             Reading value = sr.stemma_1.get(k);
-                            float x = Float.parseFloat(value.date.hour + value.date.minute) / 100;
+                            float tempX = Float.parseFloat(value.date.hour + value.date.minute) / 100;
+
+                            float x = 0f;
+                            if (tempX % 1 >= 0.5) {
+                                x = (float) Math.ceil(tempX);
+                            } else if (tempX % 1 < 0.5) {
+                                x = (float) Math.floor(tempX);
+                            } else if (tempX % 1 == 0) {
+                                x = tempX;
+                            }
+
                             float y = Float.parseFloat(value.soil.moisture);
+
                             entries.add(new Entry(x, y));
                         }
 
+                        entries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
+
                         LineDataSet dataSet = new LineDataSet(entries, "Moisture");
-                        dataSet.setValueTextColor(255);
+                        dataSet.setDrawCircles(false);
 
                         LineData lineData = new LineData(dataSet);
 
@@ -104,6 +112,7 @@ public class HomeFragment extends Fragment {
                         }*/
 
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         Log.w(TAG, "soilListener:onCancelled: ", error.toException());
