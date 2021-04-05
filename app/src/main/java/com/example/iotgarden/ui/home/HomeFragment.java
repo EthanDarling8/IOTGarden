@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,9 +46,11 @@ public class HomeFragment extends Fragment {
         LineChart chart = (LineChart) root.findViewById(R.id.chart);
 
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(@Nullable String s) {
                 mDatabase = FirebaseDatabase.getInstance().getReference();
+                LocalDate today = LocalDate.now();
 
                 // Read from the database
                 ValueEventListener soilListener = new ValueEventListener() {
@@ -71,20 +74,26 @@ public class HomeFragment extends Fragment {
 
                         for (Object k : srKeyArray) {
                             Reading value = sr.stemma_1.get(k);
-                            float tempX = Float.parseFloat(value.date.hour + value.date.minute) / 100;
+                            String valueDate = value.date.year + value.date.month + value.date.day;
+                            String todayDate = today.toString().replace("-", "");
 
-                            float x = 0f;
-                            if (tempX % 1 >= 0.5) {
-                                x = (float) Math.ceil(tempX);
-                            } else if (tempX % 1 < 0.5) {
-                                x = (float) Math.floor(tempX);
-                            } else if (tempX % 1 == 0) {
-                                x = tempX;
+                            if (valueDate.equals(todayDate)) {
+                                float tempX = Float.parseFloat(value.date.hour + value.date.minute) / 100;
+
+                                // Normalize date
+                                float x = 0f;
+                                if (tempX % 1 >= 0.5) {
+                                    x = (float) Math.ceil(tempX);
+                                } else if (tempX % 1 < 0.5) {
+                                    x = (float) Math.floor(tempX);
+                                } else if (tempX % 1 == 0) {
+                                    x = tempX;
+                                }
+
+                                float y = Float.parseFloat(value.soil.moisture);
+
+                                entries.add(new Entry(x, y));
                             }
-
-                            float y = Float.parseFloat(value.soil.moisture);
-
-                            entries.add(new Entry(x, y));
                         }
 
                         entries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
@@ -96,21 +105,6 @@ public class HomeFragment extends Fragment {
 
                         chart.setData(lineData);
                         chart.invalidate(); // refresh
-
-                        /*textView.setText(String.format("name: %s \n date: %s/%s/%s %s:00 \n" +
-                                        "moisture: %s temperature: %s",
-                                sRead.name, sRead.date.month, sRead.date.day, sRead.date.year, sRead.date.hour,
-                                sRead.soil.moisture, sRead.soil.temperature));*/
-
-                        /*for (Reading r : sr.stemma_1.values()) {
-                            Log.d(TAG, String.format("name: %s day: %s moisture: %s",
-                                    r.name, r.date.day, r.soil.moisture));
-                            textView.setText(String.format("name: %s \n date: %s/%s/%s %s:00 \n" +
-                                            "moisture: %s temperature: %s",
-                                    r.name, r.date.month, r.date.day, r.date.year, r.date.hour,
-                                    r.soil.moisture, r.soil.temperature));
-                        }*/
-
                     }
 
                     @Override
