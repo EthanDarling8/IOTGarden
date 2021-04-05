@@ -11,4 +11,5 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="refresh">Refresh</string>
+    <string name="valueDetails">Select a value to view details.</string>
 </resources>

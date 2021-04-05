@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +22,10 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +36,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
@@ -67,9 +73,11 @@ public class HomeFragment extends Fragment {
                         XAxis xAxis = chart.getXAxis();
                         xAxis.setAxisMinimum(0);
                         xAxis.setAxisMaximum(24);
+                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                        xAxis.setDrawLabels(true);
 
                         YAxis yAxis = chart.getAxisLeft();
-                        yAxis.setAxisMinimum(700);
+                        yAxis.setAxisMinimum(750);
                         yAxis.setAxisMaximum(800);
 
                         for (Object k : srKeyArray) {
@@ -100,10 +108,28 @@ public class HomeFragment extends Fragment {
 
                         LineDataSet dataSet = new LineDataSet(entries, "Moisture");
                         dataSet.setDrawCircles(false);
+                        dataSet.setLineWidth(1f);
+                        dataSet.setValueTextSize(9f);
+                        dataSet.setDrawValues(true);
 
                         LineData lineData = new LineData(dataSet);
 
+                        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                            @Override
+                            public void onValueSelected(Entry e, Highlight h) {
+                                TextView valueText = root.findViewById(R.id.valueText);
+                                valueText.setText(String.format(Locale.US,"Time: %.0f:00 Moisture: %.0f", e.getX(), e.getY()));
+                            }
+
+                            @Override
+                            public void onNothingSelected() {
+
+                            }
+                        });
+                        chart.setTouchEnabled(true);
+                        chart.getAxisRight().setEnabled(false);
                         chart.setData(lineData);
+                        chart.getDescription().setEnabled(false);
                         chart.invalidate(); // refresh
                     }
 
