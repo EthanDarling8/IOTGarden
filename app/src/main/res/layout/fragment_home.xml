@@ -27,6 +27,15 @@
         android:text="@string/valueDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight=".01"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/recentReading"
+        android:text="@string/current_reading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight=".25"
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"/>

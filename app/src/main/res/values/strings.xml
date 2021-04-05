@@ -12,4 +12,5 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="refresh">Refresh</string>
     <string name="valueDetails">Select a value to view details.</string>
+    <string name="current_reading">Current Reading:</string>
 </resources>

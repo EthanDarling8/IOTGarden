@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,24 +108,31 @@ public class HomeFragment extends Fragment {
 
                         entries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
 
+                        TextView recentReading = root.findViewById(R.id.recentReading);
+                        recentReading.setText(String.format(Locale.US,
+                                "Current: %.0f",
+                                entries.get(entries.size() - 1).getY()));
+
                         LineDataSet dataSet = new LineDataSet(entries, "Moisture");
                         dataSet.setDrawCircles(false);
-                        dataSet.setLineWidth(1f);
+                        dataSet.setLineWidth(4f);
                         dataSet.setValueTextSize(9f);
-                        dataSet.setDrawValues(true);
+                        dataSet.setDrawValues(false);
 
                         LineData lineData = new LineData(dataSet);
 
                         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                            final TextView valueText = root.findViewById(R.id.valueText);
                             @Override
                             public void onValueSelected(Entry e, Highlight h) {
-                                TextView valueText = root.findViewById(R.id.valueText);
-                                valueText.setText(String.format(Locale.US,"Time: %.0f:00 Moisture: %.0f", e.getX(), e.getY()));
+                                valueText.setText(String.format(Locale.US,
+                                        "Selected: Time: %.0f:00 Moisture: %.0f",
+                                        e.getX(), e.getY()));
                             }
 
                             @Override
                             public void onNothingSelected() {
-
+                                valueText.setText(R.string.valueDetails);
                             }
                         });
                         chart.setTouchEnabled(true);
