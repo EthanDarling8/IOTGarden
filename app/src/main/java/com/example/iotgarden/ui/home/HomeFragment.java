@@ -42,10 +42,8 @@ public class HomeFragment extends Fragment {
     private final String TAG = "Home Fragment";
     private DatabaseReference mDatabase;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         LineChart chart = root.findViewById(R.id.chart);
         TextView stemmaOne = root.findViewById(R.id.chartTitle);
@@ -112,11 +110,9 @@ public class HomeFragment extends Fragment {
                                     if (min == 0 && max == 0) {
                                         min = moisture;
                                         max = moisture;
-                                    }
-                                    else if (moisture < min) {
+                                    } else if (moisture < min) {
                                         min = moisture;
-                                    }
-                                    else if (moisture > min && moisture > max) {
+                                    } else if (moisture > min && moisture > max) {
                                         max = moisture;
                                     }
                                 }
@@ -124,10 +120,8 @@ public class HomeFragment extends Fragment {
                         }
 
                         // Set min max text
-                        TextView minText = root.findViewById(R.id.minTxt);
-                        minText.setText(String.format(Locale.US, "7 Day Min: %d", min));
-                        TextView maxText = root.findViewById(R.id.maxTxt);
-                        maxText.setText(String.format(Locale.US, "7 Day Max: %d", max));
+                        TextView minMaxTxt = root.findViewById(R.id.minMaxTxt);
+                        minMaxTxt.setText(String.format(Locale.US, "7 Day Min/Max: %d/%d", min, max));
 
                         // Set recent reading text
                         TextView recentReading = root.findViewById(R.id.recentReading);
@@ -160,7 +154,6 @@ public class HomeFragment extends Fragment {
                                 valueText.setText(R.string.valueDetails);
                             }
                         });
-
                         chart.setTouchEnabled(true);
                         chart.getAxisRight().setEnabled(false);
                         chart.setData(lineData);
@@ -182,11 +175,12 @@ public class HomeFragment extends Fragment {
     /**
      * Populates the entry list from the firebase database. The entry list is used to create the
      * data set for the line chart.
-     * @param sr SoilReading Hash Map from database
+     *
+     * @param sr         SoilReading Hash Map from database
      * @param srKeyArray Object[] Array of all the soil reading keys
-     * @param entries List<Entry>  List of entries
-     * @param value Reading that contains the name, date, and soil information.
-     * @param today LocalDate of today's date
+     * @param entries    List<Entry>  List of entries
+     * @param value      Reading that contains the name, date, and soil information.
+     * @param today      LocalDate of today's date
      * @return Reading
      */
     private Reading populateEntryList(SoilReading sr, Object[] srKeyArray, List<Entry> entries, Reading value, LocalDate today) {

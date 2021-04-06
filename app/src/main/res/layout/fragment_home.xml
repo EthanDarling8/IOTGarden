@@ -44,19 +44,11 @@
             android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/minTxt"
+            android:id="@+id/minMaxTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/_7_day_min"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/maxTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/_7_day_max"
+            android:text="@string/_7_day_min_max"
             android:textAlignment="center" />
 
     </LinearLayout>
