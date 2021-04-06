@@ -4,39 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.home.HomeFragment">
 
     <TextView
         android:id="@+id/chartTitle"
-        android:text="Stemma 1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".01"
         android:layout_gravity="center_horizontal"
-        android:textAlignment="center"/>
+        android:text="@string/stemma_1"
+        android:textAlignment="center" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"/>
+        android:layout_height="match_parent"
+        android:layout_weight=".5" />
 
-    <TextView
-        android:id="@+id/valueText"
-        android:text="@string/valueDetails"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".01"
-        android:layout_gravity="center_horizontal"
-        android:textAlignment="center"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight=".5">
 
-    <TextView
-        android:id="@+id/recentReading"
-        android:text="@string/current_reading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".25"
-        android:layout_gravity="center_horizontal"
-        android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/valueText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/valueDetails"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/recentReading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/current_reading"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/minTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/_7_day_min"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/maxTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/_7_day_max"
+            android:textAlignment="center" />
+
+    </LinearLayout>
 </LinearLayout>

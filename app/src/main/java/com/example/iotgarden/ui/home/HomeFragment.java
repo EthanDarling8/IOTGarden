@@ -22,8 +22,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.firebase.database.DataSnapshot;
@@ -31,8 +29,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,6 +48,7 @@ public class HomeFragment extends Fragment {
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         LineChart chart = (LineChart) root.findViewById(R.id.chart);
+        TextView stemmaOne = root.findViewById(R.id.chartTitle);
 
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -59,6 +56,7 @@ public class HomeFragment extends Fragment {
             public void onChanged(@Nullable String s) {
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 LocalDate today = LocalDate.now();
+                LocalDate pastSeven = today.minusDays(7);
 
                 // Read from the database
                 ValueEventListener soilListener = new ValueEventListener() {
@@ -72,25 +70,30 @@ public class HomeFragment extends Fragment {
                         Arrays.sort(srKeyArray);
                         List<Entry> entries = new ArrayList<>();
 
+                        // Create X Axis
                         XAxis xAxis = chart.getXAxis();
                         xAxis.setAxisMinimum(0);
                         xAxis.setAxisMaximum(24);
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                         xAxis.setDrawLabels(true);
 
+                        // Create Y Axis
                         YAxis yAxis = chart.getAxisLeft();
-                        yAxis.setAxisMinimum(750);
-                        yAxis.setAxisMaximum(800);
+                        //yAxis.setAxisMinimum(750);
+                        //yAxis.setAxisMaximum(800);
 
+                        Reading value = null;
+
+                        // Populate entry list
                         for (Object k : srKeyArray) {
-                            Reading value = sr.stemma_1.get(k);
+                            value = sr.stemma_1.get(k);
                             String valueDate = value.date.year + value.date.month + value.date.day;
                             String todayDate = today.toString().replace("-", "");
 
                             if (valueDate.equals(todayDate)) {
                                 float tempX = Float.parseFloat(value.date.hour + value.date.minute) / 100;
 
-                                // Normalize date
+                                // Normalize time data
                                 float x = 0f;
                                 if (tempX % 1 >= 0.5) {
                                     x = (float) Math.ceil(tempX);
@@ -106,13 +109,57 @@ public class HomeFragment extends Fragment {
                             }
                         }
 
+                        // Set chart title text
+                        assert value != null;
+                        stemmaOne.setText(value.name);
+
+                        // Sort entries by date
                         entries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
 
+                        int min = 0;
+                        int max = 0;
+
+                        // Find 7 day min and max
+                        for (Object k : srKeyArray) {
+                            value = sr.stemma_1.get(k);
+                            assert value != null;
+                            int moisture = Integer.parseInt(value.soil.moisture);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                LocalDate valueDate = LocalDate.of(
+                                        Integer.parseInt(value.date.year),
+                                        Integer.parseInt(value.date.month),
+                                        Integer.parseInt(value.date.day));
+
+                                // If the values date is after today's date minus 7 days.
+                                if (valueDate.isAfter(today.minusDays(7))) {
+                                    if (min == 0 && max == 0) {
+                                        min = moisture;
+                                        max = moisture;
+                                    }
+                                    else if (moisture < min) {
+                                        min = moisture;
+                                    }
+                                    else if (moisture > min && moisture > max) {
+                                        max = moisture;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Set min max text
+                        TextView minText = root.findViewById(R.id.minTxt);
+                        minText.setText(String.format(Locale.US, "7 Day Min: %d", min));
+                        TextView maxText = root.findViewById(R.id.maxTxt);
+                        maxText.setText(String.format(Locale.US, "7 Day Max: %d", max));
+
+                        // Set recent reading text
                         TextView recentReading = root.findViewById(R.id.recentReading);
                         recentReading.setText(String.format(Locale.US,
                                 "Current: %.0f",
                                 entries.get(entries.size() - 1).getY()));
 
+                        // Create data set
                         LineDataSet dataSet = new LineDataSet(entries, "Moisture");
                         dataSet.setDrawCircles(false);
                         dataSet.setLineWidth(4f);
@@ -121,8 +168,10 @@ public class HomeFragment extends Fragment {
 
                         LineData lineData = new LineData(dataSet);
 
+                        // Create chart and set selection text
                         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                             final TextView valueText = root.findViewById(R.id.valueText);
+
                             @Override
                             public void onValueSelected(Entry e, Highlight h) {
                                 valueText.setText(String.format(Locale.US,
@@ -135,6 +184,7 @@ public class HomeFragment extends Fragment {
                                 valueText.setText(R.string.valueDetails);
                             }
                         });
+
                         chart.setTouchEnabled(true);
                         chart.getAxisRight().setEnabled(false);
                         chart.setData(lineData);

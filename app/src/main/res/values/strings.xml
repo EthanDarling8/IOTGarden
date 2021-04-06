@@ -13,4 +13,7 @@
     <string name="refresh">Refresh</string>
     <string name="valueDetails">Select a value to view details.</string>
     <string name="current_reading">Current Reading:</string>
+    <string name="_7_day_min">7 Day Min:</string>
+    <string name="_7_day_max">7 Day Max:</string>
+    <string name="stemma_1">Stemma 1</string>
 </resources>
