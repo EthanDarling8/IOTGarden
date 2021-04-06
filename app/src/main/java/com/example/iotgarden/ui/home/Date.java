@@ -1,6 +1,9 @@
 package com.example.iotgarden.ui.home;
 
-
+/**
+ * Class that represents a unique string built from the exact year, month, day, hour, and minute
+ * when the soil was read.
+ */
 public class Date {
     public String year;
     public String month;

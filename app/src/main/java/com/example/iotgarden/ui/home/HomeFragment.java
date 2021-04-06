@@ -47,7 +47,7 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        LineChart chart = (LineChart) root.findViewById(R.id.chart);
+        LineChart chart = root.findViewById(R.id.chart);
         TextView stemmaOne = root.findViewById(R.id.chartTitle);
 
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -82,32 +82,9 @@ public class HomeFragment extends Fragment {
                         //yAxis.setAxisMinimum(750);
                         //yAxis.setAxisMaximum(800);
 
-                        Reading value = null;
-
                         // Populate entry list
-                        for (Object k : srKeyArray) {
-                            value = sr.stemma_1.get(k);
-                            String valueDate = value.date.year + value.date.month + value.date.day;
-                            String todayDate = today.toString().replace("-", "");
-
-                            if (valueDate.equals(todayDate)) {
-                                float tempX = Float.parseFloat(value.date.hour + value.date.minute) / 100;
-
-                                // Normalize time data
-                                float x = 0f;
-                                if (tempX % 1 >= 0.5) {
-                                    x = (float) Math.ceil(tempX);
-                                } else if (tempX % 1 < 0.5) {
-                                    x = (float) Math.floor(tempX);
-                                } else if (tempX % 1 == 0) {
-                                    x = tempX;
-                                }
-
-                                float y = Float.parseFloat(value.soil.moisture);
-
-                                entries.add(new Entry(x, y));
-                            }
-                        }
+                        Reading value = null;
+                        value = populateEntryList(sr, srKeyArray, entries, value, today);
 
                         // Set chart title text
                         assert value != null;
@@ -116,10 +93,9 @@ public class HomeFragment extends Fragment {
                         // Sort entries by date
                         entries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
 
+                        // Find 7 day min and max
                         int min = 0;
                         int max = 0;
-
-                        // Find 7 day min and max
                         for (Object k : srKeyArray) {
                             value = sr.stemma_1.get(k);
                             assert value != null;
@@ -201,5 +177,42 @@ public class HomeFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    /**
+     * Populates the entry list from the firebase database. The entry list is used to create the
+     * data set for the line chart.
+     * @param sr SoilReading Hash Map from database
+     * @param srKeyArray Object[] Array of all the soil reading keys
+     * @param entries List<Entry>  List of entries
+     * @param value Reading that contains the name, date, and soil information.
+     * @param today LocalDate of today's date
+     * @return Reading
+     */
+    private Reading populateEntryList(SoilReading sr, Object[] srKeyArray, List<Entry> entries, Reading value, LocalDate today) {
+        for (Object k : srKeyArray) {
+            value = sr.stemma_1.get(k);
+            String valueDate = value.date.year + value.date.month + value.date.day;
+            String todayDate = today.toString().replace("-", "");
+
+            if (valueDate.equals(todayDate)) {
+                float tempX = Float.parseFloat(value.date.hour + value.date.minute) / 100;
+
+                // Normalize time data
+                float x = 0f;
+                if (tempX % 1 >= 0.5) {
+                    x = (float) Math.ceil(tempX);
+                } else if (tempX % 1 < 0.5) {
+                    x = (float) Math.floor(tempX);
+                } else if (tempX % 1 == 0) {
+                    x = tempX;
+                }
+
+                float y = Float.parseFloat(value.soil.moisture);
+
+                entries.add(new Entry(x, y));
+            }
+        }
+        return value;
     }
 }

@@ -1,18 +1,22 @@
 package com.example.iotgarden.ui.home;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
 import java.util.HashMap;
-import java.util.Map;
 
-@IgnoreExtraProperties
+/**
+ * Class representing a Hash Map with the unique date identifier and the soil reading
+ */
 public class SoilReading {
     public HashMap<String, Reading> stemma_1;
 
+    // Empty Constructor
     public SoilReading() {
-        // Empty Constructor
+
     }
 
+    /**
+     * The Hash Map with a Key of the unique date and the Value of the reading.
+     * @param stemma_1 HashMap<String, Reading>
+     */
     public SoilReading(HashMap<String, Reading> stemma_1) {
         this.stemma_1 = stemma_1;
     }
