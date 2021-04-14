@@ -13,11 +13,10 @@ This app WILL NOT WORK without setting up a firebase account and linking it to t
 [Stemma Soil Sensor](https://www.adafruit.com/product/4026) <br>
 [JST I2C Cable](https://www.adafruit.com/product/3955) <br>
 
-```
-
 **To Do**
 ---
-
-```
-- Seven Day Chart
-```
+- [x] 24 Hour Chart
+- [ ] Seven Day Chart
+- [ ] Cards for each Stemma connection
+- [ ] Renaming of Stemma connections
+- [ ] Plant type suggestions
