@@ -68,17 +68,8 @@ public class HomeFragment extends Fragment {
                         Arrays.sort(srKeyArray);
                         List<Entry> entries = new ArrayList<>();
 
-                        // Create X Axis
-                        XAxis xAxis = chart.getXAxis();
-                        xAxis.setAxisMinimum(0);
-                        xAxis.setAxisMaximum(24);
-                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                        xAxis.setDrawLabels(true);
-
-                        // Create Y Axis
-                        YAxis yAxis = chart.getAxisLeft();
-                        //yAxis.setAxisMinimum(750);
-                        //yAxis.setAxisMaximum(800);
+                        // Create custom chart axes
+                        createAxes(chart);
 
                         // Populate entry list
                         Reading value = null;
@@ -170,6 +161,24 @@ public class HomeFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    /**
+     * Creates the X and Y axes for the Line chart
+     * @param chart LineChart
+     */
+    private void createAxes(LineChart chart) {
+        // Create X Axis
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(24);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawLabels(true);
+
+        // Create Y Axis
+        YAxis yAxis = chart.getAxisLeft();
+        //yAxis.setAxisMinimum(750);
+        //yAxis.setAxisMaximum(800);
     }
 
     /**

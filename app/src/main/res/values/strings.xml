@@ -15,4 +15,6 @@
     <string name="current_reading">Current Reading:</string>
     <string name="stemma_1">Stemma 1</string>
     <string name="_7_day_min_max">7 Day Min Max</string>
+    <string name="plants">Plants</string>
+    <string name="iot_garden">IOT Garden</string>
 </resources>
