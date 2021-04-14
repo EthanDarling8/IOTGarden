@@ -1,5 +1,5 @@
 # IOTGarden
-![Current Progress](img/stronghold-logo-left.png)<br>
+![Current Progress](progress.png)<br>
 This Android project is meant to provide a visualization of household or outdoor soil moisture levels.
 This is a work in progress.
 
