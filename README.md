@@ -34,7 +34,7 @@ Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 ~~~
 <code>0 * * * * python3 ~/Documents/Stemma/stemmaFirebase.py >> ~/Documents/Stemma/Firebaselog.txt 2>&1</code>
 ~~~
-- For more info on crontab look at its documentation. I use Ubuntu so usage may vary.
+- For more info on crontab look at its documentation
 - These crontab lines run the script and output any errors into separate log files.
 ~~~
 8. The firebase script is set to delay for 5 seconds on purpose in order to avoid simultaneous IO reading erros.
