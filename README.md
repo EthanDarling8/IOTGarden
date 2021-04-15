@@ -9,7 +9,7 @@ This is a work in progress.<br>
 This app WILL NOT WORK without setting up a firebase account and linking it to the app.<br>
 [Android Studio](https://developer.android.com/studio)
 [Firebase Realtime Database](https://firebase.google.com/)<br>
-Optional: [Adafruit IO Account](https://io.adafruit.com/)
+Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 [Raspberry Pi](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/) (Any type)<br>
 [Pyrebase](https://github.com/thisbejim/Pyrebase) on your Raspberry Pi <br>
 [Stemma Soil Sensor](https://www.adafruit.com/product/4026) <br>
