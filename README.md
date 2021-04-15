@@ -18,6 +18,7 @@ This app WILL NOT WORK without setting up a firebase account and linking it to t
 ---
 - [x] 24 Hour Chart
 - [x] Seven Day Chart
+- [ ] Add more instructions to Readme
 - [ ] Multiple Stemma connections with multiplexer
 - [ ] Cards for each Stemma connection
 - [ ] Renaming of Stemma connections
