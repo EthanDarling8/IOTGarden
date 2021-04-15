@@ -37,7 +37,7 @@ Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 - For more info on crontab look at its documentation
 - These crontab lines run the script and output any errors into separate log files.
 ~~~
-8. The firebase script is set to delay for 5 seconds on purpose in order to avoid simultaneous IO reading erros.
+8. The firebase script is set to delay for 5 seconds on purpose in order to avoid simultaneous IO reading errors.
 9. You are now uploading stemma information to Arduino IO and Firebase.
 10. The java programming on the Android side of things is set up to give a baseline of moisture levels over 7 days.
 11. Wait for the stemma data to come in over time to get a better idea of how the moisture and temperature levels fluctuate in your particular plant and soil.
