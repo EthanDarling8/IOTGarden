@@ -1,7 +1,8 @@
 # IOTGarden
-![Current Progress](currentProgress.png)<br>
-This Android project is meant to provide a visualization of household or outdoor soil moisture levels.
-This is a work in progress.
+This Android project is meant to provide a visualization of household or outdoor soil moisture levels.<br>
+This is a work in progress.<br>
+
+![Current Progress](progress.png)<br>
 
 **Requirements**
 ---
@@ -16,7 +17,11 @@ This app WILL NOT WORK without setting up a firebase account and linking it to t
 **To Do**
 ---
 - [x] 24 Hour Chart
-- [ ] Seven Day Chart
+- [x] Seven Day Chart
+- [ ] Multiple Stemma connections with multiplexer
 - [ ] Cards for each Stemma connection
 - [ ] Renaming of Stemma connections
 - [ ] Plant type suggestions
+- [ ] UI updates
+- [ ] Refactor HomeFragment
+- [ ] Create classes for chart generation
