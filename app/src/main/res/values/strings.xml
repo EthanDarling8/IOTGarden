@@ -17,4 +17,6 @@
     <string name="_7_day_min_max">7 Day Min Max</string>
     <string name="plants">Plants</string>
     <string name="iot_garden">IOT Garden</string>
+    <string name="_24_hour_chart">24 Hour Chart</string>
+    <string name="seven_day_chart">Seven Day Chart</string>
 </resources>

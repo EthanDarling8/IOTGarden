@@ -8,15 +8,29 @@
     tools:context=".ui.home.HomeFragment">
 
     <TextView
-        android:id="@+id/chartTitle"
+        android:id="@+id/dayChartTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/stemma_1"
+        android:text="@string/_24_hour_chart"
         android:textAlignment="center" />
 
     <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+        android:id="@+id/dayChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight=".5" />
+
+    <TextView
+        android:id="@+id/weekChartTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/seven_day_chart"
+        android:textAlignment="center" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/weekChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight=".5" />
