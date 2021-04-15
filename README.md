@@ -19,8 +19,8 @@ Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 ---
 1. Set up your raspberry pi with pyrebase and connect your stemma device.
 2. Set up your firebase realtime database.
-3. Clone this repository into directory of your choice.
-4. Open the repo in android studio and link you rfirebase to the application.
+3. Clone this repository into the directory of your choice.
+4. Open the repo in android studio and link your firebase to the application.
 5. The python scripts in the root directory of the repo (stemmaAIO.py and stemmaFirebase.py) should be placed somewhere on the reaspberry pi.
 6. Set up the scripts with your Adafruit IO (optional) and your firebase accounts.
 7. Set up crontab:
