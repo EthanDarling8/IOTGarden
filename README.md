@@ -41,6 +41,7 @@ Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 9. You are now uploading stemma information to Arduino IO and Firebase.
 10. The java programming on the Android side of things is set up to give a baseline of moisture levels over 7 days.
 11. Wait for the stemma data to come in over time to get a better idea of how the moisture and temperature levels fluctuate in your particular plant and soil.
+12. Check out my dashboard and feeds on Adafruit IO for an example: [Dashboard](https://io.adafruit.com/EasyEdo/dashboards/stemma), [Moisture](https://io.adafruit.com/EasyEdo/feeds/stemma.moisture), [Temperature](https://io.adafruit.com/EasyEdo/feeds/stemma.temperature)]. An example for the firbase side can be seen in the progress image above.
 
 **To Do**
 ---
