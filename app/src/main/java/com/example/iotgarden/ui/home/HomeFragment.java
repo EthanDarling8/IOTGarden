@@ -1,5 +1,6 @@
 package com.example.iotgarden.ui.home;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,22 +46,40 @@ import java.util.Locale;
 public class HomeFragment extends Fragment {
 
     private RecyclerViewAdapter adapter;
-    private final String TAG = "Home Fragment";
-
     private DatabaseReference mDatabase;
-    private LineChart weekChart;
 
+    private static LineChart weekChart;
+    private static LineChart dayChart;
+    private static LineData dayLineData;
+    private static LineData weekLineData;
     private final LocalDate today = LocalDate.now();
     private final LocalDate pastSeven = today.minusDays(7);
 
     private SoilReading sr;
     private final List<Stemma> stemmaList = new ArrayList<>();
+    private final String TAG = "Home Fragment";
+
+    public OnHomeFragmentListner mCallBack;
+
+    public interface OnHomeFragmentListner {
+        void onRefreshClicked(View v);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if (context instanceof OnHomeFragmentListner)
+            mCallBack = (OnHomeFragmentListner) context;
+        else
+            throw new ClassCastException(context.toString() + "You must implement home fragment listener.");
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        LineChart dayChart = root.findViewById(R.id.dayChart);
+        dayChart = root.findViewById(R.id.dayChart);
         weekChart = root.findViewById(R.id.weekChart);
         TextView stemmaOne = root.findViewById(R.id.dayChartTitle);
 
@@ -113,10 +132,10 @@ public class HomeFragment extends Fragment {
                                 dayEntries.get(dayEntries.size() - 1).getY()));
 
                         // Create data set for dayChart
-                        LineData dayLineData = createDataSet(dayEntries, "Moisture");
+                        dayLineData = createDataSet(dayEntries, "Moisture");
 
                         // Create data set for weekChart
-                        LineData weekLineData = createDataSet(weekEntries, "Moisture");
+                        weekLineData = createDataSet(weekEntries, "Moisture");
 
                         // Create dayChart and set selection text
                         dayChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
@@ -136,9 +155,8 @@ public class HomeFragment extends Fragment {
                         });
                         dayChart.setTouchEnabled(true);
                         dayChart.getAxisRight().setEnabled(false);
-                        dayChart.setData(dayLineData);
                         dayChart.getDescription().setEnabled(false);
-                        dayChart.invalidate(); // refresh
+                        refreshDayChart();
 
                         // Create weekChart and set selection text
                         weekChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
@@ -158,9 +176,8 @@ public class HomeFragment extends Fragment {
                         });
                         weekChart.setTouchEnabled(true);
                         weekChart.getAxisRight().setEnabled(false);
-                        weekChart.setData(weekLineData);
                         weekChart.getDescription().setEnabled(false);
-                        weekChart.invalidate(); // refresh
+                        refreshWeekChart();
                     }
 
                     @Override
@@ -406,5 +423,16 @@ public class HomeFragment extends Fragment {
         adapter = new RecyclerViewAdapter(getContext(), stemmaList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+
+    public static void refreshWeekChart() {
+        weekChart.setData(weekLineData);
+        weekChart.invalidate(); // refresh
+    }
+
+    public static void refreshDayChart() {
+        dayChart.setData(dayLineData);
+        dayChart.invalidate(); // refresh
     }
 }
