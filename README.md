@@ -2,7 +2,7 @@
 This Android, Python, and Raspberry-Pi project is meant to provide a visualization of household or outdoor soil moisture and temperature levels.<br>
 This is a work in progress.<br>
 
-![Current Progress](progress.png)<br>
+![Current Progress](recycler-progress.png)<br>
 
 **Requirements**
 ---
