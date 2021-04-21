@@ -24,7 +24,9 @@ import com.example.iotgarden.stemma.Stemma;
 
 import org.w3c.dom.Text;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Recycler view to display all of the sounds in the room database.
@@ -38,7 +40,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, current;
+        TextView name, current, minMax;
         CardView parentLayout;
 
         public ViewHolder(@NonNull View itemView) {
@@ -46,6 +48,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             name = itemView.findViewById(R.id.item_stemma_name);
             current = itemView.findViewById(R.id.item_stemma_current);
+            minMax = itemView.findViewById(R.id.item_stemma_min_max);
             parentLayout = itemView.findViewById(R.id.item_parent_layout);
         }
     }
@@ -68,7 +71,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.d(TAG, "onBindViewHolder: called.");
         Stemma stemma = stemmaList.get(position);
         holder.name.setText(stemma.reading.name);
-        holder.current.setText(stemma.reading.soil.moisture);
+        holder.current.setText(String.format(Locale.US, "Current: %s", stemma.reading.soil.moisture));
+        holder.minMax.setText("Min Max TODO"); //TODO min max callBack
 
         holder.parentLayout.setOnClickListener(v -> {
 

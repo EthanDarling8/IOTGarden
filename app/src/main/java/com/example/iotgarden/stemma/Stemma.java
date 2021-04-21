@@ -1,10 +1,5 @@
 package com.example.iotgarden.stemma;
 
-import com.example.iotgarden.ui.home.Date;
-import com.example.iotgarden.ui.home.Reading;
-import com.example.iotgarden.ui.home.Soil;
-import com.example.iotgarden.ui.home.SoilReading;
-
 import org.jetbrains.annotations.NotNull;
 
 public class Stemma {

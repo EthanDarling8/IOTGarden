@@ -1,4 +1,4 @@
-package com.example.iotgarden.ui.home;
+package com.example.iotgarden.stemma;
 
 /**
  * Class representing a reading build from the Date class. Includes the name of the reading as

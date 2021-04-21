@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.iotgarden.R;
 import com.example.iotgarden.recycler.RecyclerViewAdapter;
+import com.example.iotgarden.stemma.Reading;
+import com.example.iotgarden.stemma.SoilReading;
 import com.example.iotgarden.stemma.Stemma;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -124,12 +126,6 @@ public class HomeFragment extends Fragment {
 
                         // Find 7 day min and max
                         sevenDayMinMax(srKeyArray, root);
-
-                        // Set recent reading text
-                        TextView recentReading = root.findViewById(R.id.recentReading);
-                        recentReading.setText(String.format(Locale.US,
-                                "Current: %.0f",
-                                dayEntries.get(dayEntries.size() - 1).getY()));
 
                         // Create data sets
                         dayLineData = createDataSet(dayEntries, "Moisture");

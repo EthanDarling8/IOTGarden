@@ -1,4 +1,4 @@
-package com.example.iotgarden.ui.home;
+package com.example.iotgarden.stemma;
 
 /**
  * Class that represents a unique string built from the exact year, month, day, hour, and minute

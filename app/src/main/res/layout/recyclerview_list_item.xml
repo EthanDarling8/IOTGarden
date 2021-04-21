@@ -30,13 +30,13 @@
             android:text="@string/stemma_current"
             android:textSize="18sp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/item_stemma_min_max"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/stemma_min_max"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

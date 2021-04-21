@@ -1,4 +1,4 @@
-package com.example.iotgarden.ui.home;
+package com.example.iotgarden.stemma;
 
 import java.util.HashMap;
 
