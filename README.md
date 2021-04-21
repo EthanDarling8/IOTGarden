@@ -49,7 +49,7 @@ Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 - [x] Seven Day Chart
 - [x] Add more instructions to Readme
 - [ ] Multiple Stemma connections with multiplexer
-- [ ] Cards for each Stemma connection
+- [x] Cards for each Stemma connection
 - [ ] Renaming of Stemma connections
 - [ ] Plant type suggestions
 - [ ] UI updates
