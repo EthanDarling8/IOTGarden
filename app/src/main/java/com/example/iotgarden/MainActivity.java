@@ -7,18 +7,21 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.iotgarden.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnHomeFragmentListener {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Refreshed TODO", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-            }
+        fab.setOnClickListener(view -> {
+            onRefreshClicked();
+            Snackbar.make(view, "Refreshed Charts", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
         });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -61,5 +62,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onRefreshClicked() {
+        HomeFragment.refreshDayChart();
+        HomeFragment.refreshWeekChart();
     }
 }
