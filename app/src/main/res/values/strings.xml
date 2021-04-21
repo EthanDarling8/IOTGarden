@@ -19,4 +19,6 @@
     <string name="iot_garden">IOT Garden</string>
     <string name="_24_hour_chart">24 Hour Chart</string>
     <string name="seven_day_chart">Seven Day Chart</string>
+    <string name="stemma_name">Stemma Name</string>
+    <string name="stemma_current">Stemma Current</string>
 </resources>

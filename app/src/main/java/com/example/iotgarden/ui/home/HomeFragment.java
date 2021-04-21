@@ -14,8 +14,12 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.iotgarden.R;
+import com.example.iotgarden.recycler.RecyclerViewAdapter;
+import com.example.iotgarden.stemma.Stemma;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -40,30 +44,29 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+    private RecyclerViewAdapter adapter;
     private final String TAG = "Home Fragment";
 
     private DatabaseReference mDatabase;
     private LineChart weekChart;
 
-    private LocalDate today = LocalDate.now();
-    private LocalDate pastSeven = today.minusDays(7);
+    private final LocalDate today = LocalDate.now();
+    private final LocalDate pastSeven = today.minusDays(7);
 
     private SoilReading sr;
-    private Object[] srKeyArray;
-
+    private final List<Stemma> stemmaList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         LineChart dayChart = root.findViewById(R.id.dayChart);
         weekChart = root.findViewById(R.id.weekChart);
         TextView stemmaOne = root.findViewById(R.id.dayChartTitle);
 
+        initRecyclerView(root);
+
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
             public void onChanged(@Nullable String s) {
                 mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -88,6 +91,10 @@ public class HomeFragment extends Fragment {
                         // Populate entry list for dayChart
                         Reading dayValue = null;
                         dayValue = populateDayEntryList(sr, srKeyArray, dayEntries, dayValue, today);
+
+                        // Add value to recycler list
+                        stemmaList.add(new Stemma(dayValue, dayValue.soil, sr, dayValue.date));
+                        adapter.addItems(stemmaList);
 
                         // Populate entry list for weekChart
                         populateWeekEntryList(srKeyArray, weekEntries);
@@ -171,7 +178,7 @@ public class HomeFragment extends Fragment {
      * Finds the seven day minimum and maximum for the past seven days.
      *
      * @param srKeyArray Object[] Array of all the soil reading keys
-     * @param root View for the HomeFragment
+     * @param root       View for the HomeFragment
      */
     private void sevenDayMinMax(Object[] srKeyArray, View root) {
         Reading dayValue;
@@ -209,7 +216,7 @@ public class HomeFragment extends Fragment {
      * Populates the entry list from the firebase database. The entry list is used to create the
      * data set for the line chart.
      *
-     * @param srKeyArray Object[] Array of all the soil reading keys
+     * @param srKeyArray  Object[] Array of all the soil reading keys
      * @param weekEntries List<Entry>  List of entries for the week
      */
     private void populateWeekEntryList(Object[] srKeyArray, List<Entry> weekEntries) {
@@ -222,9 +229,9 @@ public class HomeFragment extends Fragment {
 
             // If the day of the month is between 1 and 7
             while (increment <= 7) {
-                    y = getDayAverage(sr, srKeyArray, valueDayInt);
-                    x = valueDayInt;
-                    increment++;
+                y = getDayAverage(sr, srKeyArray, valueDayInt);
+                x = valueDayInt;
+                increment++;
 
                 if (!weekEntries.contains(new Entry(x, y))) {
                     weekEntries.add(new Entry(x, y));
@@ -237,7 +244,7 @@ public class HomeFragment extends Fragment {
      * Create the set of data for the chart based off of the data entries
      *
      * @param entries List<Entry> List of entries
-     * @param label String
+     * @param label   String
      * @return LineData
      */
     @NotNull
@@ -330,9 +337,9 @@ public class HomeFragment extends Fragment {
     /**
      * Gets the average moisture for a given day of the month.
      *
-     * @param sr SoilReading Hash Map from databaseg
+     * @param sr         SoilReading Hash Map from databaseg
      * @param srKeyArray Object[] Array of all the soil reading keys
-     * @param day int the given day of the month
+     * @param day        int the given day of the month
      * @return int
      */
     private int getDayAverage(SoilReading sr, Object[] srKeyArray, int day) {
@@ -387,5 +394,17 @@ public class HomeFragment extends Fragment {
             }
         }
         return value;
+    }
+
+    /**
+     * Initializes the recycler view and it's adapter.
+     * @param view View
+     */
+    private void initRecyclerView(View view) {
+        Log.d(TAG, "iniRecyclerView: init recyclerview.");
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        adapter = new RecyclerViewAdapter(getContext(), stemmaList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 }
