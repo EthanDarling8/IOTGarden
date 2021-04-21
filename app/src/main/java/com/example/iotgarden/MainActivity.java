@@ -3,7 +3,6 @@ package com.example.iotgarden;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnHomeFragmentListner {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnHomeFragmentListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private FragmentManager fm;
@@ -32,13 +31,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onRefreshClicked(view);
-                Snackbar.make(view, "Refreshed Charts", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-            }
+        fab.setOnClickListener(view -> {
+            onRefreshClicked();
+            Snackbar.make(view, "Refreshed Charts", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
         });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -69,10 +65,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
     }
 
     @Override
-    public void onRefreshClicked(View v) {
-        runOnUiThread(() -> {
-            HomeFragment.refreshDayChart();
-            HomeFragment.refreshWeekChart();
-        });
+    public void onRefreshClicked() {
+        HomeFragment.refreshDayChart();
+        HomeFragment.refreshWeekChart();
     }
 }

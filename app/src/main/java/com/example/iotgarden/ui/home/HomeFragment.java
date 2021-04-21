@@ -59,18 +59,18 @@ public class HomeFragment extends Fragment {
     private final List<Stemma> stemmaList = new ArrayList<>();
     private final String TAG = "Home Fragment";
 
-    public OnHomeFragmentListner mCallBack;
+    public OnHomeFragmentListener mCallBack;
 
-    public interface OnHomeFragmentListner {
-        void onRefreshClicked(View v);
+    public interface OnHomeFragmentListener {
+        void onRefreshClicked();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        if (context instanceof OnHomeFragmentListner)
-            mCallBack = (OnHomeFragmentListner) context;
+        if (context instanceof OnHomeFragmentListener)
+            mCallBack = (OnHomeFragmentListener) context;
         else
             throw new ClassCastException(context.toString() + "You must implement home fragment listener.");
     }
@@ -81,7 +81,6 @@ public class HomeFragment extends Fragment {
 
         dayChart = root.findViewById(R.id.dayChart);
         weekChart = root.findViewById(R.id.weekChart);
-        TextView stemmaOne = root.findViewById(R.id.dayChartTitle);
 
         initRecyclerView(root);
 
@@ -112,6 +111,7 @@ public class HomeFragment extends Fragment {
                         dayValue = populateDayEntryList(sr, srKeyArray, dayEntries, dayValue, today);
 
                         // Add value to recycler list
+                        stemmaList.clear();
                         stemmaList.add(new Stemma(dayValue, dayValue.soil, sr, dayValue.date));
                         adapter.addItems(stemmaList);
 
@@ -131,10 +131,8 @@ public class HomeFragment extends Fragment {
                                 "Current: %.0f",
                                 dayEntries.get(dayEntries.size() - 1).getY()));
 
-                        // Create data set for dayChart
+                        // Create data sets
                         dayLineData = createDataSet(dayEntries, "Moisture");
-
-                        // Create data set for weekChart
                         weekLineData = createDataSet(weekEntries, "Moisture");
 
                         // Create dayChart and set selection text
@@ -267,6 +265,7 @@ public class HomeFragment extends Fragment {
     @NotNull
     private LineData createDataSet(List<Entry> entries, String label) {
         LineDataSet dataSet = new LineDataSet(entries, label);
+        dataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         dataSet.setDrawCircles(false);
         dataSet.setLineWidth(4f);
         dataSet.setValueTextSize(9f);
@@ -415,6 +414,7 @@ public class HomeFragment extends Fragment {
 
     /**
      * Initializes the recycler view and it's adapter.
+     *
      * @param view View
      */
     private void initRecyclerView(View view) {
@@ -425,14 +425,23 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-
+    /**
+     * Refreshes the Week Chart when the FAB is clicked
+     */
     public static void refreshWeekChart() {
         weekChart.setData(weekLineData);
-        weekChart.invalidate(); // refresh
+        weekChart.notifyDataSetChanged();
+        weekChart.fitScreen();
+        weekChart.invalidate();
     }
 
+    /**
+     * Refreshes the Day Chart when the FAB is clicked
+     */
     public static void refreshDayChart() {
         dayChart.setData(dayLineData);
-        dayChart.invalidate(); // refresh
+        dayChart.notifyDataSetChanged();
+        dayChart.fitScreen();
+        dayChart.invalidate();
     }
 }
