@@ -1,6 +1,5 @@
 /*
   Author: Ethan Darling
-  Class: CS 3270
   RecyclerViewAdapter.java
  */
 
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.iotgarden.R;
 import com.example.iotgarden.stemma.Stemma;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.w3c.dom.Text;
 
@@ -37,6 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<Stemma> stemmaList;
 
     private Context context;
+    private static ClickListener clickListener;
     private static final String TAG = "RecyclerViewAdapter";
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -74,8 +75,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.current.setText(String.format(Locale.US, "Current: %s", stemma.reading.soil.moisture));
         holder.minMax.setText("Min Max TODO"); //TODO min max callBack
 
-        holder.parentLayout.setOnClickListener(v -> {
-
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.onStemmaClick(stemma.reading.name, holder.parentLayout);
+            }
         });
     }
 
@@ -84,9 +88,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return stemmaList.size();
     }
 
-
     public void addItems(List<Stemma> stemmas) {
         notifyDataSetChanged();
         Log.d(TAG, "new Items Added: " + stemmas.toString() + "\n");
+    }
+
+    public void setOnStemmaClickListener(ClickListener clickListener) {
+        RecyclerViewAdapter.clickListener = clickListener;
+    }
+
+    /**
+     * Interface for when an item in the recycler view is clicked on.
+     */
+    public interface ClickListener {
+        void onStemmaClick(String name, View v);
     }
 }

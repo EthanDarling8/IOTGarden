@@ -45,7 +45,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeFragment extends Fragment {
+public class PlantsFragment extends Fragment {
 
     private RecyclerViewAdapter adapter;
     private DatabaseReference mDatabase;
@@ -65,6 +65,7 @@ public class HomeFragment extends Fragment {
 
     public interface OnHomeFragmentListener {
         void onRefreshClicked();
+        void stemmaClicked(String name, View v);
     }
 
     @Override
@@ -78,15 +79,22 @@ public class HomeFragment extends Fragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        PlantsViewModel plantsViewModel = new ViewModelProvider(this).get(PlantsViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_plants, container, false);
 
         dayChart = root.findViewById(R.id.dayChart);
         weekChart = root.findViewById(R.id.weekChart);
 
         initRecyclerView(root);
 
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        adapter.setOnStemmaClickListener(new RecyclerViewAdapter.ClickListener() {
+            @Override
+            public void onStemmaClick(String name, View v) {
+                mCallBack.stemmaClicked(name, v);
+            }
+        });
+
+        plantsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             public void onChanged(@Nullable String s) {
                 mDatabase = FirebaseDatabase.getInstance().getReference();
 

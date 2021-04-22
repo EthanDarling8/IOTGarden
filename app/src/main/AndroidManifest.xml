@@ -10,6 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IOTGarden">
         <activity
+            android:name=".ui.home.PlantDetailActivity"
+            android:label="@string/title_activity_stemma_detail"
+            android:theme="@style/Theme.IOTGarden.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.IOTGarden.NoActionBar">

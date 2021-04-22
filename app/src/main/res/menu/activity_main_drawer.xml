@@ -5,8 +5,14 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_plants"
             android:icon="@drawable/ic_baseline_grass_24"
             android:title="@string/plants" />
+        <item
+            android:id="@+id/nav_todo"
+            android:icon="@drawable/ic_baseline_grass_24"
+            android:title="todo"
+            />
+
     </group>
 </menu>
