@@ -7,9 +7,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="refresh">Refresh</string>
     <string name="valueDetails">Select a value to view details.</string>
     <string name="current_reading">Current Reading:</string>
@@ -22,4 +19,7 @@
     <string name="stemma_name">Stemma Name</string>
     <string name="stemma_current">Stemma Current</string>
     <string name="stemma_min_max">Stemma Min Max</string>
+    <string name="title_activity_stemma_detail">ScrollingActivity</string>
+    <string name="month_chart">Month Chart</string>
+    <string name="select_point">Select a data point</string>
 </resources>

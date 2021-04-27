@@ -1,5 +1,6 @@
 package com.example.iotgarden;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -13,15 +14,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.iotgarden.ui.home.HomeFragment;
+import com.example.iotgarden.ui.home.PlantDetailActivity;
+import com.example.iotgarden.ui.home.PlantsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnHomeFragmentListener {
+public class MainActivity extends AppCompatActivity implements PlantsFragment.OnHomeFragmentListener {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home)
+                R.id.nav_plants)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -66,7 +67,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
 
     @Override
     public void onRefreshClicked() {
-        HomeFragment.refreshDayChart();
-        HomeFragment.refreshWeekChart();
+
+    }
+
+    @Override
+    public void stemmaClicked(String name, View v) {
+        Intent intent = new Intent(this, PlantDetailActivity.class);
+        intent.putExtra("SESSION_NAME", name);
+        startActivity(intent);
     }
 }
