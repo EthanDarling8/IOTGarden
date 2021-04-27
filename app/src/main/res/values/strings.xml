@@ -20,4 +20,6 @@
     <string name="stemma_current">Stemma Current</string>
     <string name="stemma_min_max">Stemma Min Max</string>
     <string name="title_activity_stemma_detail">ScrollingActivity</string>
+    <string name="month_chart">Month Chart</string>
+    <string name="select_point">Select a data point</string>
 </resources>

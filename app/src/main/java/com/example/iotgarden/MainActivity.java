@@ -14,8 +14,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.iotgarden.ui.home.PlantsFragment;
 import com.example.iotgarden.ui.home.PlantDetailActivity;
+import com.example.iotgarden.ui.home.PlantsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -23,7 +23,6 @@ import com.google.android.material.snackbar.Snackbar;
 public class MainActivity extends AppCompatActivity implements PlantsFragment.OnHomeFragmentListener {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +67,7 @@ public class MainActivity extends AppCompatActivity implements PlantsFragment.On
 
     @Override
     public void onRefreshClicked() {
-        PlantsFragment.refreshDayChart();
-        PlantsFragment.refreshWeekChart();
+
     }
 
     @Override

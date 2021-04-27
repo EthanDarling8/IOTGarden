@@ -33,8 +33,8 @@ import java.util.Locale;
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    // Fields
-    private List<Stemma> stemmaList;
+    private final List<Stemma> stemmaList;
+    private final String minMax;
 
     private Context context;
     private static ClickListener clickListener;
@@ -54,9 +54,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public RecyclerViewAdapter(Context context, List<Stemma> stemmaList) {
+    public RecyclerViewAdapter(Context context, List<Stemma> stemmaList, String minMax) {
         this.context = context;
         this.stemmaList = stemmaList;
+        this.minMax = minMax;
     }
 
     @NonNull
@@ -73,7 +74,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Stemma stemma = stemmaList.get(position);
         holder.name.setText(stemma.reading.name);
         holder.current.setText(String.format(Locale.US, "Current: %s", stemma.reading.soil.moisture));
-        holder.minMax.setText("Min Max TODO"); //TODO min max callBack
+        holder.minMax.setText(minMax);
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
