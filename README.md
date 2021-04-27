@@ -47,11 +47,13 @@ Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 ---
 - [x] 24 Hour Chart
 - [x] Seven Day Chart
+- [x] Month Chart
+- [x] Plant Details Fragment
 - [x] Add more instructions to Readme
 - [ ] Multiple Stemma connections with multiplexer
 - [x] Cards for each Stemma connection
 - [ ] Renaming of Stemma connections
 - [ ] Plant type suggestions
 - [ ] UI updates
-- [ ] Refactor HomeFragment
+- [x] Refactor HomeFragment
 - [ ] Create classes for chart generation
