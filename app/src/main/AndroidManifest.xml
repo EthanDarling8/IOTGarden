@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IOTGarden">
+        <activity android:name=".ui.home.PlantEditActivity"></activity>
         <activity
             android:name=".ui.home.PlantDetailActivity"
             android:label="@string/title_activity_stemma_detail"

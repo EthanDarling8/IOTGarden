@@ -1,5 +1,7 @@
 package com.example.iotgarden.ui.home;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,8 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.iotgarden.R;
+import com.example.iotgarden.recycler.RecyclerViewAdapter;
 import com.example.iotgarden.stemma.Reading;
 import com.example.iotgarden.stemma.SoilReading;
 import com.github.mikephil.charting.charts.LineChart;
@@ -36,8 +41,10 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 public class PlantDetailActivity extends AppCompatActivity {
@@ -55,6 +62,7 @@ public class PlantDetailActivity extends AppCompatActivity {
     private SoilReading sr;
     private final String TAG = "Plant Detail Activity";
     private String stemmaName;
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,16 +77,17 @@ public class PlantDetailActivity extends AppCompatActivity {
         weekChart = findViewById(R.id.weekChart);
         monthChart = findViewById(R.id.monthChart);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        stemmaName = getIntent().getStringExtra("SESSION_NAME");
+
+        FloatingActionButton fab = findViewById(R.id.fab_details_edit);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(PlantDetailActivity.this, PlantEditActivity.class);
+                intent.putExtra("SESSION_NAME", stemmaName);
+                startActivity(intent);
             }
         });
-
-        stemmaName = getIntent().getStringExtra("SESSION_NAME");
 
         toolBarLayout.setTitle(stemmaName);
     }
@@ -89,7 +98,6 @@ public class PlantDetailActivity extends AppCompatActivity {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
         ValueEventListener soilListener = new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 sr = snapshot.getValue(SoilReading.class);
@@ -97,10 +105,11 @@ public class PlantDetailActivity extends AppCompatActivity {
 
                 Set<String> srKeySet = sr.stemma_1.keySet();
                 for (String k : srKeySet) {
-                    if (!sr.stemma_1.get(k).name.equals(stemmaName)) {
+                    if (!Objects.requireNonNull(sr.stemma_1.get(k)).name.equals(stemmaName)) {
                         srKeySet.remove(k);
                     }
                 }
+
                 Object[] srKeyArray = srKeySet.toArray();
                 Arrays.sort(srKeyArray);
                 List<Entry> dayEntries = new ArrayList<>();
@@ -109,10 +118,12 @@ public class PlantDetailActivity extends AppCompatActivity {
 
                 // Create custom chart axes for dayChart
                 createAxes(dayChart, true, 0, true, 23);
-                createAxes(weekChart, true, pastSeven.getDayOfMonth(),
-                        true, today.minusDays(1).getDayOfMonth());
-                createAxes(monthChart, true, 1,
-                        true, LocalDate.now().getMonth().length(true));
+                if (today.getDayOfMonth() >= 7) {
+                    createAxes(weekChart, true, pastSeven.getDayOfMonth(), true, today.getDayOfMonth());
+                } else {
+                    createAxes(weekChart, true, 1, true, today.getDayOfMonth());
+                }
+                createAxes(monthChart, true, 1, true, today.getMonth().length(false));
 
                 // Populate entry lists
                 populateDayEntryList(sr, srKeyArray, dayEntries, today);
@@ -120,9 +131,9 @@ public class PlantDetailActivity extends AppCompatActivity {
                 populateMonthEntryList(srKeyArray, monthEntries, today);
 
                 // Sort entries by date
-                dayEntries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
-                weekEntries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
-                monthEntries.sort((e1, e2) -> Float.compare(e1.getX(), e2.getX()));
+                Collections.sort(dayEntries, (e1, e2) -> Float.compare(e1.getX(), e2.getX()));
+                Collections.sort(weekEntries, (e1, e2) -> Float.compare(e1.getX(), e2.getX()));
+                Collections.sort(monthEntries, (e1, e2) -> Float.compare(e1.getX(), e2.getX()));
 
                 // Find 7 day min and max
                 sevenDayMinMax(srKeyArray);
@@ -146,65 +157,12 @@ public class PlantDetailActivity extends AppCompatActivity {
                 monthDesc.setText(getString(R.string.select_point));
                 monthChart.setDescription(monthDesc);
 
-                // Create dayChart and set selection text
-                dayChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-                    @Override
-                    public void onValueSelected(Entry e, Highlight h) {
-                        dayDesc.setText(String.format(Locale.US,
-                                "Time: %.0f:00 Moisture: %.0f",
-                                e.getX(), e.getY()));
-                        dayChart.setDescription(dayDesc);
-
-                    }
-
-                    @Override
-                    public void onNothingSelected() {
-                        dayDesc.setText(getString(R.string.select_point));
-                        dayChart.setDescription(dayDesc);
-                    }
-                });
-                dayChart.setTouchEnabled(true);
-                dayChart.getAxisRight().setEnabled(false);
+                // Create charts and set selection text
+                onChartValueSelected(dayDesc, dayChart, "Time: %.0f:00 Moisture: %.0f");
                 refreshChart(dayChart, dayLineData);
-
-                // Create weekChart and set selection text
-                weekChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-                    @Override
-                    public void onValueSelected(Entry e, Highlight h) {
-                        weekDesc.setText(String.format(Locale.US,
-                                "Day: %.0f Moisture: %.0f",
-                                e.getX(), e.getY()));
-                        weekChart.setDescription(weekDesc);
-                    }
-
-                    @Override
-                    public void onNothingSelected() {
-                        weekDesc.setText(getString(R.string.select_point));
-                        weekChart.setDescription(weekDesc);
-                    }
-                });
-                weekChart.setTouchEnabled(true);
-                weekChart.getAxisRight().setEnabled(false);
+                onChartValueSelected(weekDesc, weekChart, "Day: %.0f Moisture: %.0f");
                 refreshChart(weekChart, weekLineData);
-
-                // Create dayChart and set selection text
-                monthChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-                    @Override
-                    public void onValueSelected(Entry e, Highlight h) {
-                        monthDesc.setText(String.format(Locale.US,
-                                "Day: %.0f Moisture: %.0f",
-                                e.getX(), e.getY()));
-                        monthChart.setDescription(monthDesc);
-                    }
-
-                    @Override
-                    public void onNothingSelected() {
-                        monthDesc.setText(getString(R.string.select_point));
-                        monthChart.setDescription(monthDesc);
-                    }
-                });
-                monthChart.setTouchEnabled(true);
-                monthChart.getAxisRight().setEnabled(false);
+                onChartValueSelected(monthDesc, monthChart, "Day: %.0f Moisture: %.0f");
                 refreshChart(monthChart, monthLineData);
             }
 
@@ -214,6 +172,24 @@ public class PlantDetailActivity extends AppCompatActivity {
             }
         };
         mDatabase.addValueEventListener(soilListener);
+    }
+
+    private void onChartValueSelected(Description weekDesc, LineChart chart, String s) {
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                weekDesc.setText(String.format(Locale.US, s, e.getX(), e.getY()));
+                chart.setDescription(weekDesc);
+            }
+
+            @Override
+            public void onNothingSelected() {
+                weekDesc.setText(getString(R.string.select_point));
+                chart.setDescription(weekDesc);
+            }
+        });
+        chart.setTouchEnabled(true);
+        chart.getAxisRight().setEnabled(false);
     }
 
 
@@ -251,12 +227,12 @@ public class PlantDetailActivity extends AppCompatActivity {
     }
 
     /**
-     * Populates the entry list from the firebase database. The entry list is used to create the
-     * data set for the line chart.
+     * Populates the day entry list from the firebase database. The entry list is used to create the
+     * data set for the day line chart.
      *
      * @param sr         SoilReading Hash Map from database
      * @param srKeyArray Object[] Array of all the soil reading keys
-     * @param dayEntries    List<Entry>  List of entries
+     * @param dayEntries List<Entry>  List of entries
      * @param today      LocalDate of today's date
      */
     private void populateDayEntryList(SoilReading sr, Object[] srKeyArray, List<Entry> dayEntries, LocalDate today) {
@@ -279,8 +255,8 @@ public class PlantDetailActivity extends AppCompatActivity {
     }
 
     /**
-     * Populates the entry list from the firebase database. The entry list is used to create the
-     * data set for the line chart.
+     * Populates the week entry list from the firebase database. The entry list is used to create
+     * the ata set for the week line chart.
      *
      * @param srKeyArray  Object[] Array of all the soil reading keys
      * @param weekEntries List<Entry>  List of entries for the week
@@ -305,6 +281,14 @@ public class PlantDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Populates the month entry list from the firebase database. The entry list is used to create
+     * the data set for the month line chart.
+     *
+     * @param srKeyArray   Object[] Array of all the soil reading keys
+     * @param monthEntries List<Entry>  List of entries for the month
+     * @param today        LocalDate Today's Local Date
+     */
     private void populateMonthEntryList(Object[] srKeyArray, List<Entry> monthEntries, LocalDate today) {
         for (Object k : srKeyArray) {
             Reading monthValue = sr.stemma_1.get(k);
@@ -393,7 +377,7 @@ public class PlantDetailActivity extends AppCompatActivity {
     /**
      * Gets the average moisture for a given day of the month.
      *
-     * @param sr         SoilReading Hash Map from databaseg
+     * @param sr         SoilReading Hash Map from database
      * @param srKeyArray Object[] Array of all the soil reading keys
      * @param day        int the given day of the month
      * @return int
@@ -416,46 +400,9 @@ public class PlantDetailActivity extends AppCompatActivity {
     }
 
     /**
-     * Populates the entry list from the firebase database. The entry list is used to create the
-     * data set for the line chart.
-     *
-     * @param sr         SoilReading Hash Map from database
-     * @param srKeyArray Object[] Array of all the soil reading keys
-     * @param entries    List<Entry>  List of entries
-     * @param value      Reading that contains the name, date, and soil information.
-     * @param today      LocalDate of today's date
-     * @return Reading
-     */
-/*    private Reading populateWeekEntryList(SoilReading sr, Object[] srKeyArray, List<Entry> entries, Reading value, LocalDate today) {
-        for (Object k : srKeyArray) {
-            value = sr.stemma_1.get(k);
-
-            int valueDayInt = Integer.parseInt(value.date.day);
-
-            LocalDate valueDate = LocalDate.of(
-                    Integer.parseInt(value.date.year),
-                    Integer.parseInt(value.date.month),
-                    valueDayInt);
-
-            if (valueDate.isAfter(today.minusDays(8)) || valueDate.isBefore(today)) {
-                int sum = 0;
-                float tempX = 0f, x = 0f;
-
-                int y = getDayAverage(sr, srKeyArray, valueDayInt);
-
-                // Normalize time data
-                x = normalizeData(tempX);
-
-                entries.add(new Entry(x, y));
-            }
-        }
-        return value;
-    }*/
-
-    /**
      * Refreshes a specified chart
      *
-     * @param chart LineChart
+     * @param chart    LineChart
      * @param lineData LineData
      */
     public static void refreshChart(LineChart chart, LineData lineData) {

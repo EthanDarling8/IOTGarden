@@ -85,7 +85,6 @@ public class PlantsFragment extends Fragment {
 
                 // Read from the database
                 ValueEventListener soilListener = new ValueEventListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         sr = snapshot.getValue(SoilReading.class);
