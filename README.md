@@ -52,7 +52,7 @@ Optional: [Adafruit IO Account](https://io.adafruit.com/)<br>
 - [x] Add more instructions to Readme
 - [ ] Multiple Stemma connections with multiplexer
 - [x] Cards for each Stemma connection
-- [ ] Renaming of Stemma connections
+- [x] Renaming of Stemma connections
 - [ ] Plant type suggestions
 - [ ] UI updates
 - [x] Refactor HomeFragment
