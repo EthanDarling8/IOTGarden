@@ -22,4 +22,8 @@
     <string name="title_activity_stemma_detail">ScrollingActivity</string>
     <string name="month_chart">Month Chart</string>
     <string name="select_point">Select a data point</string>
+    <string name="edit_stemma">Edit Stemma</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save_plant_edit">save_plant_edit</string>
 </resources>
