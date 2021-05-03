@@ -12,7 +12,6 @@ import com.example.iotgarden.R;
 import com.example.iotgarden.stemma.Reading;
 import com.example.iotgarden.stemma.SoilReading;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +39,6 @@ public class PlantEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_plant_edit);
         setTitle("Edit Stemma");
         nameInput = findViewById(R.id.edit_input_name);
-        nameInputString = nameInput.getText().toString();
         stemmaName = getIntent().getStringExtra("SESSION_NAME");
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -62,8 +60,8 @@ public class PlantEditActivity extends AppCompatActivity {
                                 String date = reading.date.year + reading.date.month
                                         + reading.date.day + reading.date.hour
                                         + reading.date.minute;
-                                mDatabase.child(stemmaName).child(date).child("name")
-                                        .setValue(nameInputString);
+                                mDatabase.child("stemma_1").child(date).child("name")
+                                        .setValue(nameInput.getText().toString());
                             }
                         }
                     }
@@ -76,7 +74,7 @@ public class PlantEditActivity extends AppCompatActivity {
                 mDatabase.addValueEventListener(soilListener);
 
                 Intent intent = new Intent(PlantEditActivity.this, PlantDetailActivity.class);
-                intent.putExtra("SESSION_NAME", nameInputString);
+                intent.putExtra("SESSION_NAME", nameInput.getText().toString());
                 startActivity(intent);
             }
         });
